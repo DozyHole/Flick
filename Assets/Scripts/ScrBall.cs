@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ScrBall : MonoBehaviour
 {
     public Transform paddle;
     ScrPaddle scrPaddle;
+    ScrGame scrGame;
 
     float _nextHitTime = 0.0f;
     Queue<Vector3> _prevPosBall;
@@ -13,9 +15,25 @@ public class ScrBall : MonoBehaviour
     Queue<float> _prevRotPaddle;
 
     Vector3 _posinit;
+
+    private void Awake()
+    {
+        
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        GameObject objGame = GameObject.FindGameObjectWithTag("Game");
+        if (objGame)
+        {
+            scrGame = objGame.GetComponent<ScrGame>();
+            if(scrGame)
+            {
+                // register with our game, so it game track state etc
+                scrGame.RegisterBall(transform);
+            }
+        }
         _prevPosBall = new Queue<Vector3>();
         _prevPosPaddle = new Queue<Vector3>();
         _prevRotPaddle = new Queue<float>();
@@ -24,17 +42,11 @@ public class ScrBall : MonoBehaviour
         GetComponent<Rigidbody>().interpolation = UnityEngine.RigidbodyInterpolation.Interpolate;
     }
 
+    
+
     // Update is called once per frame
     void Update()
     {
-        if(transform.position.y < -5.0f)
-        {
-            transform.position = _posinit;
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
-            GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-        }
-
-
         if (_prevPosBall.Count == 4)// && _prevPosPaddle.Count == 2 && _prevRotPaddle.Count == 2)
         {
             Vector3 lastPosBall = _prevPosBall.Dequeue();

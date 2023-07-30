@@ -21,10 +21,6 @@ public class ScrPaddle : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Application.targetFrameRate = 60;
-        //_ballPositions = new Queue<Vector3>();
-        //_lastPositions = new Queue<Vector3>();
-        //_lastAngles = new Queue<float>();
     }
 
     private void FixedUpdate()
