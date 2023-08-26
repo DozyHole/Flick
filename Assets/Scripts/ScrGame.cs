@@ -22,18 +22,21 @@ public class ScrGame : MonoBehaviour
     void Update()
     {
         // check game conditions for all balls in play
-        foreach(Transform ball in _balls)
+        _balls.RemoveAll(item => item.position.y < -25.0f);
+        if (_balls.Count == 0)
         {
-            if (ball.position.y < -5.0f)
-            {
-                // reset scene - game over
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            }
+            // reset scene - game over
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 
     public void RegisterBall(Transform ball)
     {
         _balls.Add(ball);
+    }
+
+    public void UnregisterBall(Transform ball)
+    {
+        _balls.Remove(ball);
     }
 }

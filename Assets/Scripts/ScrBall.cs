@@ -6,15 +6,14 @@ using UnityEngine.SceneManagement;
 public class ScrBall : MonoBehaviour
 {
     public Transform paddle;
+
     ScrPaddle scrPaddle;
     ScrGame scrGame;
-
     float _nextHitTime = 0.0f;
     Queue<Vector3> _prevPosBall;
     Queue<Vector3> _prevPosPaddle;
     Queue<float> _prevRotPaddle;
-
-    Vector3 _posinit;
+    GameObject _objGame;
 
     private void Awake()
     {
@@ -24,13 +23,13 @@ public class ScrBall : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameObject objGame = GameObject.FindGameObjectWithTag("Game");
-        if (objGame)
+        _objGame = GameObject.FindGameObjectWithTag("Game");
+        if (_objGame)
         {
-            scrGame = objGame.GetComponent<ScrGame>();
+            scrGame = _objGame.GetComponent<ScrGame>();
             if(scrGame)
             {
-                // register with our game, so it game track state etc
+                // register with our game, so game can track state etc
                 scrGame.RegisterBall(transform);
             }
         }
@@ -38,11 +37,8 @@ public class ScrBall : MonoBehaviour
         _prevPosPaddle = new Queue<Vector3>();
         _prevRotPaddle = new Queue<float>();
         scrPaddle = paddle.GetComponent<ScrPaddle>();
-        _posinit = transform.position;
         GetComponent<Rigidbody>().interpolation = UnityEngine.RigidbodyInterpolation.Interpolate;
     }
-
-    
 
     // Update is called once per frame
     void Update()
@@ -85,5 +81,18 @@ public class ScrBall : MonoBehaviour
         _prevPosBall.Enqueue(transform.position);
         _prevPosPaddle.Enqueue(paddle.transform.position);
         _prevRotPaddle.Enqueue(paddle.transform.eulerAngles.z);
+    }
+
+    private void OnDestroy()
+    {
+        if (_objGame)
+        {
+            scrGame = _objGame.GetComponent<ScrGame>();
+            if (scrGame)
+            {
+                // unregister with our game, so game can track state etc
+                scrGame.UnregisterBall(transform);
+            }
+        }
     }
 }

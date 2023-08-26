@@ -5,6 +5,7 @@ using UnityEngine;
 public class ScrInputTouch : MonoBehaviour
 {
     public float moveSensitivity;
+    public float turnSensitivity;
     Dictionary<int, Vector2> _touchPositions;
     ScrPaddle _scrPaddle;
 
@@ -22,22 +23,22 @@ public class ScrInputTouch : MonoBehaviour
         {
             foreach (Touch touch in Input.touches)
             {
-                if (touch.phase == TouchPhase.Began)
-                {
+                if (touch.phase == TouchPhase.Began){
                     _touchPositions.Add(touch.fingerId, touch.position);
                 }
 
                 //Detects Swipe while finger is still moving
                 if (touch.phase == TouchPhase.Moved)
                 {
+                    // to do: screen dpi consideration options
+                    // - use dpi value
+                    // - get world units from touch positions/delta 
                     Vector2 posInitial = _touchPositions[touch.fingerId];
-                    if (posInitial.x < Screen.width / 2.0f)
-                    {
-                        _scrPaddle.Move(touch.deltaPosition * moveSensitivity);
+                    if (posInitial.x < Screen.width / 2.0f){
+                        _scrPaddle.Move(touch.deltaPosition * moveSensitivity * 100.0f);
                     }
-                    else
-                    {
-                        _scrPaddle.Rotate(-touch.deltaPosition.x);
+                    else{
+                        _scrPaddle.Rotate(-touch.deltaPosition.x * turnSensitivity * 100.0f);
                     }
                 }
 
@@ -49,9 +50,10 @@ public class ScrInputTouch : MonoBehaviour
 
                         if (posInitial.x > Screen.width / 2.0f)
                         {
+                            // jump on release
                             _scrPaddle.Jump();
-                            //if (touch.tapCount > 0)
-                            //{
+                            // jump on tap event
+                            //if (touch.tapCount > 0){
                             //    _scrPaddle.Jump();
                             //}
                         }

@@ -67,12 +67,12 @@ public class ScrPaddle : MonoBehaviour
 
     public void Move(Vector2 delta)
     {
-        transform.position = new Vector3(transform.position.x + delta.x * Time.deltaTime, transform.position.y, transform.position.z);
+        transform.position = new Vector3(transform.position.x + delta.x / Screen.width, transform.position.y, transform.position.z);
     }
 
     public void Rotate(float value)
     {
-        transform.Rotate(new Vector3(0.0f, 0.0f, value * Time.deltaTime * turnSensitivity));
+        transform.Rotate(new Vector3(0.0f, 0.0f, value / Screen.width * turnSensitivity));
         if (transform.rotation.eulerAngles.z > 30.0f && transform.rotation.eulerAngles.z < 90.0f)
         {
             transform.rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 30.0f));
